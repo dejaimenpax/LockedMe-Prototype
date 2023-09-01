@@ -2,14 +2,16 @@ package LockedMeApp;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Scanner; // Import the Scanner class for user input
 
 public class LockedMeApp {
 
     public static void main(String[] args) {
-
         displayWelcomeScreen();
 
-        int userChoice = 1;
+        Scanner scanner = new Scanner(System.in);
+
+        int userChoice = getUserChoice(scanner);
 
         switch (userChoice) {
             case 1:
@@ -19,6 +21,8 @@ public class LockedMeApp {
             default:
                 System.out.println("Invalid choice. Please select a valid option (1-6).");
         }
+
+        scanner.close();
     }
 
     // Method to display the welcome screen and menu options
@@ -38,36 +42,52 @@ public class LockedMeApp {
         System.out.println("6. Close the application");
         System.out.println();
         System.out.print("Please enter your choice (1-6): ");
-
     }
-
-
 
     // Method to retrieve and display file names in ascending order
     private static void retrieveFileNamesInAscendingOrder() {
         System.out.println();
-        // Specify the directory path (change this to your desired directory)
+
         String directoryPath = "src/files_dummy";
 
-        // Create a File object for the directory
         File directory = new File(directoryPath);
 
-        // Check if the directory exists and is a directory
         if (directory.exists() && directory.isDirectory()) {
-            // List the files in the directory
+
             String[] fileNames = directory.list();
-
-            // Sort the file names in ascending order
             Arrays.sort(fileNames);
-
-            // Display the sorted file name
             System.out.println("File Names in Ascending Order:");
+
             for (String fileName : fileNames) {
                 System.out.println(fileName);
             }
+
         } else {
             System.out.println("Invalid directory path.");
         }
     }
+
+    // Method to get the user's choice with error handling
+    private static int getUserChoice(Scanner scanner) {
+        int choice = 0;
+        boolean validInput = false;
+
+        while (!validInput) {
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+
+                if (choice >= 1 && choice <= 6) {
+                    validInput = true;
+                } else {
+                    System.out.println("Invalid choice. Please select a valid option (1-6): ");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number (1-6): ");
+            }
+        }
+
+        return choice;
+    }
 }
+
 
