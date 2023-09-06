@@ -24,6 +24,9 @@ public class LockedMeApp {
             case 3:
                 deleteUserSpecifiedFile(scanner);
                 break;
+            case 4:
+                searchUserSpecifiedFile(scanner);
+                break;
             // Other cases will be added here
             default:
                 System.out.println("Invalid choice. Please select a valid option (1-6).");
@@ -155,6 +158,33 @@ public class LockedMeApp {
                 } else {
                     System.out.println("Unable to delete the file.");
                 }
+            } else {
+                System.out.println("File not found.");
+            }
+        } else {
+            System.out.println("Invalid directory path.");
+        }
+    }
+
+    private static void searchUserSpecifiedFile(Scanner scanner) {
+        System.out.print("Enter the file name to search: ");
+        String fileNameToSearch = scanner.nextLine();
+
+        String directoryPath = "src/files_dummy";
+
+        File directory = new File(directoryPath);
+
+        if (directory.exists() && directory.isDirectory()) {
+            File[] existingFiles = directory.listFiles();
+
+            // Check for case-insensitive file name match
+            File foundFile = Arrays.stream(existingFiles)
+                    .filter(file -> file.getName().equalsIgnoreCase(fileNameToSearch))
+                    .findFirst()
+                    .orElse(null);
+
+            if (foundFile != null) {
+                System.out.println("File found: " + foundFile.getName());
             } else {
                 System.out.println("File not found.");
             }
