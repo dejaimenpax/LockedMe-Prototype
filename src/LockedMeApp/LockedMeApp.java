@@ -2,8 +2,7 @@ package LockedMeApp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Scanner; // Import the Scanner class for user input
+import java.util.*;
 
 public class LockedMeApp {
 
@@ -71,15 +70,24 @@ public class LockedMeApp {
         File directory = new File(directoryPath);
 
         if (directory.exists() && directory.isDirectory()) {
+            File[] existingFilesArray = directory.listFiles();
 
-            String[] fileNames = directory.list();
-            Arrays.sort(fileNames);
-            System.out.println("File Names in Ascending Order:");
+            if (existingFilesArray != null && existingFilesArray.length > 0) {
+                List<String> fileNames = new ArrayList<>();
+                for (File file : existingFilesArray) {
+                    fileNames.add(file.getName());
+                }
 
-            for (String fileName : fileNames) {
-                System.out.println(fileName);
+                // Utiliza el Comparator personalizado para ordenar sin distinguir mayúsculas y minúsculas
+                Collections.sort(fileNames, new IgnoreCaseComparator());
+
+                System.out.println("File Names in Ascending Order:");
+                for (String fileName : fileNames) {
+                    System.out.println(fileName);
+                }
+            } else {
+                System.out.println("The directory is empty.");
             }
-
         } else {
             System.out.println("Invalid directory path.");
         }
@@ -116,31 +124,44 @@ public class LockedMeApp {
         File directory = new File(directoryPath);
 
         if (directory.exists() && directory.isDirectory()) {
-            File[] existingFiles = directory.listFiles();
+            List<File> existingFiles = new ArrayList<>();
+            File[] existingFilesArray = directory.listFiles();
 
-            // Check for case-insensitive file name match
-            boolean fileExists = Arrays.stream(existingFiles)
-                    .anyMatch(file -> file.getName().equalsIgnoreCase(fileName));
+            if (existingFilesArray != null) {
+                Collections.addAll(existingFiles, existingFilesArray);
 
-            if (!fileExists) {
-                File newFile = new File(directory, fileName);
-
-                try {
-                    if (newFile.createNewFile()) {
-                        System.out.println("File added successfully.");
-                    } else {
-                        System.out.println("File already exists with that name.");
+                // Verificar si el archivo ya existe (ignorando mayúsculas/minúsculas)
+                boolean fileExists = false;
+                for (File file : existingFiles) {
+                    if (file.getName().equalsIgnoreCase(fileName)) {
+                        fileExists = true;
+                        break;
                     }
-                } catch (Exception e) {
-                    System.out.println("An error occurred while adding the file.");
+                }
+
+                if (!fileExists) {
+                    File newFile = new File(directory, fileName);
+
+                    try {
+                        if (newFile.createNewFile()) {
+                            System.out.println("File added successfully.");
+                        } else {
+                            System.out.println("File already exists with that name.");
+                        }
+                    } catch (IOException e) {
+                        System.out.println("An error occurred while adding the file.");
+                    }
+                } else {
+                    System.out.println("File already exists with a similar name.");
                 }
             } else {
-                System.out.println("File already exists with a similar name.");
+                System.out.println("No files found in the directory.");
             }
         } else {
             System.out.println("Invalid directory path.");
         }
     }
+
 
 
     private static void deleteUserSpecifiedFile(Scanner scanner) {
@@ -154,17 +175,21 @@ public class LockedMeApp {
         if (directory.exists() && directory.isDirectory()) {
             File[] existingFiles = directory.listFiles();
 
-            // Check for case-insensitive file name match
-            File fileToDelete = Arrays.stream(existingFiles)
-                    .filter(file -> file.getName().equalsIgnoreCase(fileNameToDelete))
-                    .findFirst()
-                    .orElse(null);
+            ArrayList<File> matchingFiles = new ArrayList<>();
 
-            if (fileToDelete != null) {
-                if (fileToDelete.delete()) {
-                    System.out.println("File deleted successfully.");
-                } else {
-                    System.out.println("Unable to delete the file.");
+            for (File file : existingFiles) {
+                if (file.getName().equalsIgnoreCase(fileNameToDelete)) {
+                    matchingFiles.add(file);
+                }
+            }
+
+            if (!matchingFiles.isEmpty()) {
+                for (File fileToDelete : matchingFiles) {
+                    if (fileToDelete.delete()) {
+                        System.out.println("File deleted successfully: " + fileToDelete.getName());
+                    } else {
+                        System.out.println("Unable to delete the file: " + fileToDelete.getName());
+                    }
                 }
             } else {
                 System.out.println("File not found.");
@@ -174,32 +199,37 @@ public class LockedMeApp {
         }
     }
 
-    private static void searchUserSpecifiedFile(Scanner scanner) {
-        System.out.print("Enter the file name to search: ");
-        String fileNameToSearch = scanner.nextLine();
+
+    private static void retrieveFileNamesInAscendingOrder() {
+        System.out.println();
 
         String directoryPath = "src/files_dummy";
 
         File directory = new File(directoryPath);
 
         if (directory.exists() && directory.isDirectory()) {
-            File[] existingFiles = directory.listFiles();
+            File[] existingFilesArray = directory.listFiles();
 
-            // Check for case-insensitive file name match
-            File foundFile = Arrays.stream(existingFiles)
-                    .filter(file -> file.getName().equalsIgnoreCase(fileNameToSearch))
-                    .findFirst()
-                    .orElse(null);
+            if (existingFilesArray != null && existingFilesArray.length > 0) {
+                List<String> fileNames = new ArrayList<>();
+                for (File file : existingFilesArray) {
+                    fileNames.add(file.getName());
+                }
 
-            if (foundFile != null) {
-                System.out.println("File found: " + foundFile.getName());
+                fileNames.sort(String::compareToIgnoreCase);
+
+                System.out.println("File Names in Ascending Order:");
+                for (String fileName : fileNames) {
+                    System.out.println(fileName);
+                }
             } else {
-                System.out.println("File not found: " + fileNameToSearch);
+                System.out.println("The directory is empty.");
             }
         } else {
             System.out.println("Invalid directory path.");
         }
     }
+
 }
 
 
