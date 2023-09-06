@@ -1,6 +1,7 @@
 package LockedMeApp;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner; // Import the Scanner class for user input
 
@@ -16,6 +17,9 @@ public class LockedMeApp {
         switch (userChoice) {
             case 1:
                 retrieveFileNamesInAscendingOrder();
+                break;
+            case 2:
+                addUserSpecifiedFile(scanner);
                 break;
             // Other cases will be added here
             default:
@@ -87,6 +91,35 @@ public class LockedMeApp {
         }
 
         return choice;
+    }
+
+    private static void addUserSpecifiedFile(Scanner scanner) {
+        System.out.print("Enter the file name to add: ");
+        String fileName = scanner.nextLine();
+
+        // Specify the directory path (change this to your desired directory)
+        String directoryPath = "src/files_dummy";
+
+        // Create a File object for the directory
+        File directory = new File(directoryPath);
+
+        if (directory.exists() && directory.isDirectory()) {
+            // Create a File object for the new file
+            File newFile = new File(directory, fileName);
+
+            try {
+                // Create the new file (this will not overwrite an existing file)
+                if (newFile.createNewFile()) {
+                    System.out.println("File added successfully.");
+                } else {
+                    System.out.println("File already exists with that name.");
+                }
+            } catch (IOException e) {
+                System.out.println("An error occurred while adding the file.");
+            }
+        } else {
+            System.out.println("Invalid directory path.");
+        }
     }
 }
 
