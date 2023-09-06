@@ -186,7 +186,7 @@ public class LockedMeApp {
             if (foundFile != null) {
                 System.out.println("File found: " + foundFile.getName());
             } else {
-                System.out.println("File not found.");
+                System.out.println("File not found: " + fileNameToSearch);
             }
         } else {
             System.out.println("Invalid directory path.");
