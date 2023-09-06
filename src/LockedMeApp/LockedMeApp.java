@@ -8,28 +8,36 @@ import java.util.Scanner; // Import the Scanner class for user input
 public class LockedMeApp {
 
     public static void main(String[] args) {
-        displayWelcomeScreen();
-
         Scanner scanner = new Scanner(System.in);
+        boolean exit = false;
 
-        int userChoice = getUserChoice(scanner);
+        while (!exit) {
+            displayWelcomeScreen();
+            int userChoice = getUserChoice(scanner);
 
-        switch (userChoice) {
-            case 1:
-                retrieveFileNamesInAscendingOrder();
-                break;
-            case 2:
-                addUserSpecifiedFile(scanner);
-                break;
-            case 3:
-                deleteUserSpecifiedFile(scanner);
-                break;
-            case 4:
-                searchUserSpecifiedFile(scanner);
-                break;
-            // Other cases will be added here
-            default:
-                System.out.println("Invalid choice. Please select a valid option (1-6).");
+            switch (userChoice) {
+                case 1:
+                    retrieveFileNamesInAscendingOrder();
+                    break;
+                case 2:
+                    addUserSpecifiedFile(scanner);
+                    break;
+                case 3:
+                    deleteUserSpecifiedFile(scanner);
+                    break;
+                case 4:
+                    searchUserSpecifiedFile(scanner);
+                    break;
+                case 5:
+                    System.out.println("Returning to the main context.");
+                    break;
+                case 6:
+                    System.out.println("Closing the application.");
+                    exit = true;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please select a valid option (1-6).");
+            }
         }
 
         scanner.close();
