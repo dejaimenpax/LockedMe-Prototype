@@ -105,22 +105,32 @@ public class LockedMeApp {
         File directory = new File(directoryPath);
 
         if (directory.exists() && directory.isDirectory()) {
+            File[] existingFiles = directory.listFiles();
 
-            File newFile = new File(directory, fileName);
+            // Check for case-insensitive file name match
+            boolean fileExists = Arrays.stream(existingFiles)
+                    .anyMatch(file -> file.getName().equalsIgnoreCase(fileName));
 
-            try {
-                if (newFile.createNewFile()) {
-                    System.out.println("File added successfully.");
-                } else {
-                    System.out.println("File already exists with that name.");
+            if (!fileExists) {
+                File newFile = new File(directory, fileName);
+
+                try {
+                    if (newFile.createNewFile()) {
+                        System.out.println("File added successfully.");
+                    } else {
+                        System.out.println("File already exists with that name.");
+                    }
+                } catch (Exception e) {
+                    System.out.println("An error occurred while adding the file.");
                 }
-            } catch (IOException e) {
-                System.out.println("An error occurred while adding the file.");
+            } else {
+                System.out.println("File already exists with a similar name.");
             }
         } else {
             System.out.println("Invalid directory path.");
         }
     }
+
 
     private static void deleteUserSpecifiedFile(Scanner scanner) {
         System.out.print("Enter the file name to delete: ");
@@ -131,9 +141,15 @@ public class LockedMeApp {
         File directory = new File(directoryPath);
 
         if (directory.exists() && directory.isDirectory()) {
-            File fileToDelete = new File(directory, fileNameToDelete);
+            File[] existingFiles = directory.listFiles();
 
-            if (fileToDelete.exists()) {
+            // Check for case-insensitive file name match
+            File fileToDelete = Arrays.stream(existingFiles)
+                    .filter(file -> file.getName().equalsIgnoreCase(fileNameToDelete))
+                    .findFirst()
+                    .orElse(null);
+
+            if (fileToDelete != null) {
                 if (fileToDelete.delete()) {
                     System.out.println("File deleted successfully.");
                 } else {
