@@ -21,6 +21,9 @@ public class LockedMeApp {
             case 2:
                 addUserSpecifiedFile(scanner);
                 break;
+            case 3:
+                deleteUserSpecifiedFile(scanner);
+                break;
             // Other cases will be added here
             default:
                 System.out.println("Invalid choice. Please select a valid option (1-6).");
@@ -97,18 +100,15 @@ public class LockedMeApp {
         System.out.print("Enter the file name to add: ");
         String fileName = scanner.nextLine();
 
-        // Specify the directory path (change this to your desired directory)
         String directoryPath = "src/files_dummy";
 
-        // Create a File object for the directory
         File directory = new File(directoryPath);
 
         if (directory.exists() && directory.isDirectory()) {
-            // Create a File object for the new file
+
             File newFile = new File(directory, fileName);
 
             try {
-                // Create the new file (this will not overwrite an existing file)
                 if (newFile.createNewFile()) {
                     System.out.println("File added successfully.");
                 } else {
@@ -116,6 +116,31 @@ public class LockedMeApp {
                 }
             } catch (IOException e) {
                 System.out.println("An error occurred while adding the file.");
+            }
+        } else {
+            System.out.println("Invalid directory path.");
+        }
+    }
+
+    private static void deleteUserSpecifiedFile(Scanner scanner) {
+        System.out.print("Enter the file name to delete: ");
+        String fileNameToDelete = scanner.nextLine();
+
+        String directoryPath = "src/files_dummy";
+
+        File directory = new File(directoryPath);
+
+        if (directory.exists() && directory.isDirectory()) {
+            File fileToDelete = new File(directory, fileNameToDelete);
+
+            if (fileToDelete.exists()) {
+                if (fileToDelete.delete()) {
+                    System.out.println("File deleted successfully.");
+                } else {
+                    System.out.println("Unable to delete the file.");
+                }
+            } else {
+                System.out.println("File not found.");
             }
         } else {
             System.out.println("Invalid directory path.");
