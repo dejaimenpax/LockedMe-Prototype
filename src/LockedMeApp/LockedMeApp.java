@@ -61,6 +61,43 @@ public class LockedMeApp {
         System.out.print("Please enter your choice (1-6): ");
     }
 
+    private static void searchUserSpecifiedFile(Scanner scanner) {
+        System.out.print("Enter the file name to search: ");
+        String fileNameToSearch = scanner.nextLine();
+
+        String directoryPath = "src/files_dummy";
+
+        File directory = new File(directoryPath);
+
+        if (directory.exists() && directory.isDirectory()) {
+            File[] existingFilesArray = directory.listFiles();
+
+            if (existingFilesArray != null) {
+                List<File> existingFiles = new ArrayList<>();
+                Collections.addAll(existingFiles, existingFilesArray);
+
+                // Realiza una búsqueda sin distinguir mayúsculas y minúsculas en la lista de archivos
+                File foundFile = null;
+                for (File file : existingFiles) {
+                    if (file.getName().equalsIgnoreCase(fileNameToSearch)) {
+                        foundFile = file;
+                        break;
+                    }
+                }
+
+                if (foundFile != null) {
+                    System.out.println("File found: " + foundFile.getName());
+                } else {
+                    System.out.println("File not found: " + fileNameToSearch);
+                }
+            } else {
+                System.out.println("No files found in the directory.");
+            }
+        } else {
+            System.out.println("Invalid directory path.");
+        }
+    }
+
     // Method to retrieve and display file names in ascending order
     private static void retrieveFileNamesInAscendingOrder() {
         System.out.println();
@@ -193,37 +230,6 @@ public class LockedMeApp {
                 }
             } else {
                 System.out.println("File not found.");
-            }
-        } else {
-            System.out.println("Invalid directory path.");
-        }
-    }
-
-
-    private static void retrieveFileNamesInAscendingOrder() {
-        System.out.println();
-
-        String directoryPath = "src/files_dummy";
-
-        File directory = new File(directoryPath);
-
-        if (directory.exists() && directory.isDirectory()) {
-            File[] existingFilesArray = directory.listFiles();
-
-            if (existingFilesArray != null && existingFilesArray.length > 0) {
-                List<String> fileNames = new ArrayList<>();
-                for (File file : existingFilesArray) {
-                    fileNames.add(file.getName());
-                }
-
-                fileNames.sort(String::compareToIgnoreCase);
-
-                System.out.println("File Names in Ascending Order:");
-                for (String fileName : fileNames) {
-                    System.out.println(fileName);
-                }
-            } else {
-                System.out.println("The directory is empty.");
             }
         } else {
             System.out.println("Invalid directory path.");
