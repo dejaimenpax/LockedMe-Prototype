@@ -1,6 +1,7 @@
 package LockedMeApp;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner; // Import the Scanner class for user input
 
@@ -16,6 +17,15 @@ public class LockedMeApp {
         switch (userChoice) {
             case 1:
                 retrieveFileNamesInAscendingOrder();
+                break;
+            case 2:
+                addUserSpecifiedFile(scanner);
+                break;
+            case 3:
+                deleteUserSpecifiedFile(scanner);
+                break;
+            case 4:
+                searchUserSpecifiedFile(scanner);
                 break;
             // Other cases will be added here
             default:
@@ -87,6 +97,100 @@ public class LockedMeApp {
         }
 
         return choice;
+    }
+
+    private static void addUserSpecifiedFile(Scanner scanner) {
+        System.out.print("Enter the file name to add: ");
+        String fileName = scanner.nextLine();
+
+        String directoryPath = "src/files_dummy";
+
+        File directory = new File(directoryPath);
+
+        if (directory.exists() && directory.isDirectory()) {
+            File[] existingFiles = directory.listFiles();
+
+            // Check for case-insensitive file name match
+            boolean fileExists = Arrays.stream(existingFiles)
+                    .anyMatch(file -> file.getName().equalsIgnoreCase(fileName));
+
+            if (!fileExists) {
+                File newFile = new File(directory, fileName);
+
+                try {
+                    if (newFile.createNewFile()) {
+                        System.out.println("File added successfully.");
+                    } else {
+                        System.out.println("File already exists with that name.");
+                    }
+                } catch (Exception e) {
+                    System.out.println("An error occurred while adding the file.");
+                }
+            } else {
+                System.out.println("File already exists with a similar name.");
+            }
+        } else {
+            System.out.println("Invalid directory path.");
+        }
+    }
+
+
+    private static void deleteUserSpecifiedFile(Scanner scanner) {
+        System.out.print("Enter the file name to delete: ");
+        String fileNameToDelete = scanner.nextLine();
+
+        String directoryPath = "src/files_dummy";
+
+        File directory = new File(directoryPath);
+
+        if (directory.exists() && directory.isDirectory()) {
+            File[] existingFiles = directory.listFiles();
+
+            // Check for case-insensitive file name match
+            File fileToDelete = Arrays.stream(existingFiles)
+                    .filter(file -> file.getName().equalsIgnoreCase(fileNameToDelete))
+                    .findFirst()
+                    .orElse(null);
+
+            if (fileToDelete != null) {
+                if (fileToDelete.delete()) {
+                    System.out.println("File deleted successfully.");
+                } else {
+                    System.out.println("Unable to delete the file.");
+                }
+            } else {
+                System.out.println("File not found.");
+            }
+        } else {
+            System.out.println("Invalid directory path.");
+        }
+    }
+
+    private static void searchUserSpecifiedFile(Scanner scanner) {
+        System.out.print("Enter the file name to search: ");
+        String fileNameToSearch = scanner.nextLine();
+
+        String directoryPath = "src/files_dummy";
+
+        File directory = new File(directoryPath);
+
+        if (directory.exists() && directory.isDirectory()) {
+            File[] existingFiles = directory.listFiles();
+
+            // Check for case-insensitive file name match
+            File foundFile = Arrays.stream(existingFiles)
+                    .filter(file -> file.getName().equalsIgnoreCase(fileNameToSearch))
+                    .findFirst()
+                    .orElse(null);
+
+            if (foundFile != null) {
+                System.out.println("File found: " + foundFile.getName());
+            } else {
+                System.out.println("File not found: " + fileNameToSearch);
+            }
+        } else {
+            System.out.println("Invalid directory path.");
+        }
     }
 }
 
