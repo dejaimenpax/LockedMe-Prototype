@@ -110,17 +110,15 @@ public class LockedMeApp {
             File[] existingFilesArray = directory.listFiles();
 
             if (existingFilesArray != null && existingFilesArray.length > 0) {
-                List<String> fileNames = new ArrayList<>();
+                // Use a PriorityQueue with a custom comparator to sort file names
+                PriorityQueue<String> fileNames = new PriorityQueue<>(new IgnoreCaseComparator());
                 for (File file : existingFilesArray) {
                     fileNames.add(file.getName());
                 }
 
-                // Utiliza el Comparator personalizado para ordenar sin distinguir mayúsculas y minúsculas
-                Collections.sort(fileNames, new IgnoreCaseComparator());
-
                 System.out.println("File Names in Ascending Order:");
-                for (String fileName : fileNames) {
-                    System.out.println(fileName);
+                while (!fileNames.isEmpty()) {
+                    System.out.println(fileNames.poll());
                 }
             } else {
                 System.out.println("The directory is empty.");
